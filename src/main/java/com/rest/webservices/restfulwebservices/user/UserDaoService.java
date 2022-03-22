@@ -10,6 +10,7 @@ import java.util.List;
 public class UserDaoService {
 
     private static List<User> users = new LinkedList<>();
+    private static int userCounter = 4;
 
     static {
         users.add(new User(1, "Rupam Hari", new Date()));
@@ -23,7 +24,7 @@ public class UserDaoService {
     }
 
     public User save(User user) {
-        for (User u : users) if (u.getId() == user.getId()) return null;
+        user.setId(++userCounter);
         users.add(user);
         return user;
     }
