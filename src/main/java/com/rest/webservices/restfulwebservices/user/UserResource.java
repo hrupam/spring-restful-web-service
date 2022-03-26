@@ -21,7 +21,7 @@ public class UserResource {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<Object> createUser(@RequestBody User user) {
         User savedUser = userService.save(user);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
         return ResponseEntity.created(location).build();
@@ -29,8 +29,11 @@ public class UserResource {
 
     //retrieve user based on id
     @GetMapping("/users/{id}")
-    public User getUser(@PathVariable int id) {
-        return userService.findOne(id);
+    public ResponseEntity<User> getUser(@PathVariable int id) throws Exception {
+        User user = userService.findOne(id);
+        if (user == null)
+            throw new UserNotFoundException("id = " + id);
+        return ResponseEntity.ok().body(user);
     }
 
 }
