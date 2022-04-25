@@ -39,6 +39,13 @@ public class UserResource {
         return user;
     }
 
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Object> deleteUser(@PathVariable int id) {
+        User deletedUser = userService.deleteUser(id);
+        if (deletedUser != null) return ResponseEntity.ok().build();
+        throw new UserNotFoundException("User not found for id = " + id);
+    }
+
     //retrieve all posts for a user based on id
     @GetMapping("/users/{id}/posts")
     public List<Post> getAllPostsForUser(@PathVariable int id) {

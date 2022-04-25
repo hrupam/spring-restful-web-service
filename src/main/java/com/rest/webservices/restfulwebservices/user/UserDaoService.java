@@ -44,6 +44,13 @@ public class UserDaoService {
         return null;
     }
 
+    public User deleteUser(int id) {
+        User user = this.findOne(id);
+        if (user != null) users.remove(user);
+        return user;
+
+    }
+
     public Post savePost(int userId, Post post) {
         User user = findOne(userId);
         if (user == null) throw new UserNotFoundException("User not found for id = " + userId);
