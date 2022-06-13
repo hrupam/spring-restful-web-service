@@ -3,6 +3,8 @@ package com.rest.webservices.restfulwebservices.user;
 import com.rest.webservices.restfulwebservices.post.Post;
 import com.rest.webservices.restfulwebservices.post.PostNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -33,11 +35,15 @@ public class UserResource {
 
     //retrieve a user based on id
     @GetMapping("/users/{id}")
-    public User getUser(@PathVariable int id) {
+    public EntityModel<User> getUser(@PathVariable int id) {
         User user = userService.findOne(id);
         if (user == null)
             throw new UserNotFoundException("User not found for id = " + id);
-        return user;
+
+        EntityModel<User> model = EntityModel.of(user);
+        WebMvcLinkBuilder linkToUsers = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getAllUsers());
+        model.add(linkToUsers.withRel("all-users"));
+        return model;
     }
 
     @DeleteMapping("/users/{id}")
@@ -50,7 +56,9 @@ public class UserResource {
     //retrieve all posts for a user based on id
     @GetMapping("/users/{id}/posts")
     public List<Post> getAllPostsForUser(@PathVariable int id) {
-        User user = this.getUser(id);
+        User user = userService.findOne(id);
+        if (user == null)
+            throw new UserNotFoundException("User not found for id = " + id);
         return user.getPosts();
     }
 
