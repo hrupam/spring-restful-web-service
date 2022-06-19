@@ -1,18 +1,19 @@
 package com.rest.webservices.restfulwebservices.user;
 
 import com.rest.webservices.restfulwebservices.post.Post;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class UserDaoService {
 
     private static List<User> users = new LinkedList<>();
     private static int userCounter = 4;
-//    private static int postCount = 4;
 
     static {
         Post p1 = new Post(1, "I am at Bangkok", "enjoying!!!");
@@ -26,9 +27,13 @@ public class UserDaoService {
         users.add(new User(3, "Morgan Stanley", new Date()));
         users.add(new User(4, "Mark Henry", new Date()));
     }
+//    private static int postCount = 4;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public List<User> findAll() {
-        return users;
+        return userRepository.findAll();
     }
 
     public User save(User user) {
@@ -39,7 +44,8 @@ public class UserDaoService {
     }
 
     public User findOne(int id) {
-        return users.stream().filter(u -> u.getId() == id).findFirst().orElse(null);
+        final Optional<User> user = userRepository.findById(id);
+        return user.orElse(null);
     }
 
     public User deleteUser(int id) {
