@@ -3,7 +3,6 @@ package com.rest.webservices.restfulwebservices.user;
 import com.rest.webservices.restfulwebservices.post.Post;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,7 +12,7 @@ public class UserDaoService {
 
     private static List<User> users = new LinkedList<>();
     private static int userCounter = 4;
-    private static int postCount = 4;
+//    private static int postCount = 4;
 
     static {
         Post p1 = new Post(1, "I am at Bangkok", "enjoying!!!");
@@ -22,10 +21,10 @@ public class UserDaoService {
         Post p4 = new Post(4, "Got 5 🌟 @Leetcode", "proud moment!!!");
 
 
-        users.add(new User(1, "Rupam Hari", new Date(), new ArrayList<>(List.of(p1, p2))));
-        users.add(new User(2, "Quinton D'Cock", new Date(), List.of(p3)));
-        users.add(new User(3, "Morgan Stanley", new Date(), List.of(p4)));
-        users.add(new User(4, "Mark Henry", new Date(), new ArrayList<>()));
+        users.add(new User(1, "Rupam Hari", new Date()));
+        users.add(new User(2, "Quinton D'Cock", new Date()));
+        users.add(new User(3, "Morgan Stanley", new Date()));
+        users.add(new User(4, "Mark Henry", new Date()));
     }
 
     public List<User> findAll() {
@@ -34,7 +33,7 @@ public class UserDaoService {
 
     public User save(User user) {
         user.setId(++userCounter);
-        if (user.getPosts() == null) user.setPosts(new ArrayList<>());
+//        if (user.getPosts() == null) user.setPosts(new ArrayList<>());
         users.add(user);
         return user;
     }
@@ -50,11 +49,11 @@ public class UserDaoService {
 
     }
 
-    public Post savePost(int userId, Post post) {
-        User user = findOne(userId);
-        if (user == null) throw new UserNotFoundException("User not found for id = " + userId);
-        post.setId(++postCount);
-        user.getPosts().add(post);
-        return post;
-    }
+//    public Post savePost(int userId, Post post) {
+//        User user = findOne(userId);
+//        if (user == null) throw new UserNotFoundException("User not found for id = " + userId);
+//        post.setId(++postCount);
+//        user.getPosts().add(post);
+//        return post;
+//    }
 }

@@ -1,7 +1,5 @@
 package com.rest.webservices.restfulwebservices.user;
 
-import com.rest.webservices.restfulwebservices.post.Post;
-import com.rest.webservices.restfulwebservices.post.PostNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -53,6 +51,7 @@ public class UserResource {
         throw new UserNotFoundException("User not found for id = " + id);
     }
 
+    /*
     //retrieve all posts for a user based on id
     @GetMapping("/users/{id}/posts")
     public List<Post> getAllPostsForUser(@PathVariable int id) {
@@ -77,6 +76,7 @@ public class UserResource {
         for (Post p : posts) if (p.getId() == postId) return p;
         throw new PostNotFoundException("Post not found for id = " + postId + " having userId = " + userId);
     }
+    */
 
 
 }
