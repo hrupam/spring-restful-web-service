@@ -1,19 +1,19 @@
 package com.rest.webservices.restfulwebservices.user;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.rest.webservices.restfulwebservices.post.Post;
+
+import javax.persistence.*;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
 public class User {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Size(min = 2, message = "Name must have atleast 2 characters")
@@ -22,14 +22,18 @@ public class User {
     @Past(message = "Birthdate must be previous of current date")
     private Date birthDate;
 
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Post> posts;
 
     public User() {
     }
 
-    public User(int id, String name, Date birthDate) {
-        this.id = id;
-        this.name = name;
-        this.birthDate = birthDate;
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 
     public int getId() {

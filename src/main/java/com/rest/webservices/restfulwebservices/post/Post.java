@@ -1,15 +1,26 @@
 package com.rest.webservices.restfulwebservices.post;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rest.webservices.restfulwebservices.user.User;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "post")
 public class Post {
-    private int id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     private String title;
     private String description;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private User user;
 
-    public Post(int id, String title, String description) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
+    public Post() {
     }
 
     @Override
@@ -21,11 +32,11 @@ public class Post {
                 '}';
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -43,5 +54,13 @@ public class Post {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

@@ -1,5 +1,7 @@
 package com.rest.webservices.restfulwebservices.user;
 
+import com.rest.webservices.restfulwebservices.post.Post;
+import com.rest.webservices.restfulwebservices.post.PostNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -45,13 +47,12 @@ public class UserResource {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable int id) {
+    public void deleteUser(@PathVariable int id) {
         User deletedUser = userService.deleteUser(id);
-        if (deletedUser != null) return ResponseEntity.ok().build();
-        throw new UserNotFoundException("User not found for id = " + id);
+        if (deletedUser == null) throw new UserNotFoundException("User not found for id = " + id);
     }
 
-    /*
+
     //retrieve all posts for a user based on id
     @GetMapping("/users/{id}/posts")
     public List<Post> getAllPostsForUser(@PathVariable int id) {
@@ -69,14 +70,21 @@ public class UserResource {
         return ResponseEntity.created(location).build();
     }
 
+
     //retrieve a post of a user based on post id
     @GetMapping("/users/{userId}/posts/{postId}")
     public Post getPostForUser(@PathVariable int userId, @PathVariable int postId) {
-        List<Post> posts = getAllPostsForUser(userId);
-        for (Post p : posts) if (p.getId() == postId) return p;
-        throw new PostNotFoundException("Post not found for id = " + postId + " having userId = " + userId);
+        Post post = userService.findPostByUser(userId, postId);
+        if (post == null)
+            throw new PostNotFoundException("Post not found for id = " + postId + " having userId = " + userId);
+        return post;
     }
-    */
 
-
+    //delete a post for a user
+    @DeleteMapping("/users/{userId}/posts/{postId}")
+    public void deletePostForUser(@PathVariable int userId, @PathVariable int postId) {
+        Post deletedPost = userService.deletePostByUser(userId, postId);
+        if (deletedPost == null)
+            throw new PostNotFoundException("Post not found for id = " + postId + " having userId = " + userId);
+    }
 }

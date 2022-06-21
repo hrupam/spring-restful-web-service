@@ -1,46 +1,28 @@
 package com.rest.webservices.restfulwebservices.user;
 
 import com.rest.webservices.restfulwebservices.post.Post;
+import com.rest.webservices.restfulwebservices.post.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class UserDaoService {
 
-    private static List<User> users = new LinkedList<>();
-    private static int userCounter = 4;
-
-    static {
-        Post p1 = new Post(1, "I am at Bangkok", "enjoying!!!");
-        Post p2 = new Post(2, "I got a new job", "new journey begins!!!");
-        Post p3 = new Post(3, "I am a good boy", "happy!!!");
-        Post p4 = new Post(4, "Got 5 🌟 @Leetcode", "proud moment!!!");
-
-
-        users.add(new User(1, "Rupam Hari", new Date()));
-        users.add(new User(2, "Quinton D'Cock", new Date()));
-        users.add(new User(3, "Morgan Stanley", new Date()));
-        users.add(new User(4, "Mark Henry", new Date()));
-    }
-//    private static int postCount = 4;
-
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
     public List<User> findAll() {
         return userRepository.findAll();
     }
 
     public User save(User user) {
-        user.setId(++userCounter);
-//        if (user.getPosts() == null) user.setPosts(new ArrayList<>());
-        users.add(user);
-        return user;
+        return userRepository.save(user);
     }
 
     public User findOne(int id) {
@@ -49,17 +31,32 @@ public class UserDaoService {
     }
 
     public User deleteUser(int id) {
-        User user = this.findOne(id);
-        if (user != null) users.remove(user);
+        var user = this.findOne(id);
+        if (user == null) return null;
+        userRepository.deleteById(id);
         return user;
-
     }
 
-//    public Post savePost(int userId, Post post) {
-//        User user = findOne(userId);
-//        if (user == null) throw new UserNotFoundException("User not found for id = " + userId);
-//        post.setId(++postCount);
-//        user.getPosts().add(post);
-//        return post;
-//    }
+    public Post savePost(int id, Post post) {
+        var user = this.findOne(id);
+        if (user == null) throw new UserNotFoundException("User not found for id = " + id);
+
+        post.setUser(user);
+
+        return postRepository.save(post);
+    }
+
+    public Post findPostByUser(int userId, int postId) {
+        var user = this.findOne(userId);
+        if (user == null) throw new UserNotFoundException("User not found for id = " + userId);
+        final Optional<Post> post = user.getPosts().stream().filter(p -> p.getId() == postId).findFirst();
+        return post.orElse(null);
+    }
+
+    public Post deletePostByUser(int userId, int postId) {
+        var post = this.findPostByUser(userId, postId);
+        if (post == null) return null;
+        postRepository.delete(post);
+        return post;
+    }
 }
